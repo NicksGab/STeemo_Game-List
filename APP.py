@@ -1,4 +1,7 @@
 from flask import Flask
+from flask_wtf.csrf import CSRFProtect
+from flask_bcrypt import Bcrypt
+
 from dotenv import load_dotenv
 import os
 
@@ -7,6 +10,8 @@ from models.Usuario import Usuario
 from models.DataBase import DataBase
 from models.Seguranca import CryptoGuard
 
+from views.Views_User import Views_User
+from views.Views_Game import Views_Game
 from views.Views import Views
 
 from config.Config import *
@@ -25,13 +30,18 @@ class STeemo:
     self.diretorioJsonUsuarios = PATH_JSON_USUARIOS
 
     self.DB = DataBase()
-    self.cryptguard = CryptoGuard()
 
     self.DB.CreateBackup()
 
     self.app = Flask(__name__)
     self.app.secret_key = os.getenv("SECRET_KEY_APP")
+    self.csrf = CSRFProtect(self.app)
+    self.bcrypt = Bcrypt(self.app)
+
     self.views = Views(self, self.app)
+    self.viewsUser = Views_User(self, self.app)
+    self.viewsGame = Views_Game(self, self.app)
+
     self.app.run(debug=True)
 
     self.DB.CreateBackup()
@@ -48,6 +58,8 @@ class STeemo:
 
   def registraNovoJogo(self, info):
     self.DB.CreateJogo(info)
+    jogoDB = self.pegaJogoPorNome(info['Name'])
+    return Jogo(jogoDB[0])
 
   def registraNovoUsuario(self, info):
     self.DB.CreateUsuario(info)
@@ -59,7 +71,7 @@ class STeemo:
     usuarioTemp = args[0]
     usuario = Usuario(usuarioTemp[1], 
                       usuarioTemp[2],
-                      self.cryptguard.decrypt(usuarioTemp[3]))
+                      usuarioTemp[3])
     return usuario
 
 
@@ -91,6 +103,14 @@ class STeemo:
 
   def restauraBackupusuarios(self):
     self.DB.RestoreBackupUsuarios()
+
+
+
+
+  def apagaTabela(self, tabela):
+    print('entrou app')
+    return self.DB.TruncateTable(tabela)
+
 
 if __name__ == '__main__': 
   STeemo()  

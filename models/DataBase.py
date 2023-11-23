@@ -123,11 +123,11 @@ class DataBase:
     cursor.close()
     connection.close()
 
-  def UpdateUsuario(self):
+  def UpdateUsuario(self, usuario):
     connection = self.Connection()
     cursor = connection.cursor()
 
-
+    cursor.execute(f"update usuarios set Name = '{usuario.Nome}', Category = '{usuario.Categoria}', Platform = '{usuario.Plataforma}' where User_Id = {usuario.Id}")
 
     connection.commit()
     cursor.close()
@@ -144,11 +144,11 @@ class DataBase:
     cursor.close()
     connection.close()
 
-  def DeleteUsuario(self):
+  def DeleteUsuario(self, user_id):
     connection = self.Connection()
     cursor = connection.cursor()
 
-
+    cursor.execute(f'delete from usuarios where User_ID = {user_id}')
 
     connection.commit()
     cursor.close()
@@ -160,14 +160,19 @@ class DataBase:
   def TruncateTable(self, table):
     connection = self.Connection()
     cursor = connection.cursor()
+    try:
+      cursor.execute(f'Drop Table {table}')
+      connection.commit()
+      self.CreateTables()
+      response = True
+    except Exception as e:
+      print(e)
+      response = False
+    finally:
+      cursor.close()
+      connection.close()
 
-    cursor.execute(f'Drop Table {table}')
-    connection.commit()
-    self.CreateTables()
-
-    cursor.close()
-    connection.close()
-
+    return response
 
   def RestoreBackupJogos(self):
     connection = self.Connection()
@@ -207,20 +212,23 @@ class DataBase:
     usuariosDb = self.GetUsuarios()
     print('Iniciando backup de usuarios')
 
-    for usuarioDb in usuariosDb:
-      i += 1
-      print(f'Usuario {i} de {len(usuariosDb)}.')
-
-      usuario = {
-                "ID": usuarioDb[0],
-                 "Name": usuarioDb[1],
-                 "Nickname": usuarioDb[2],
-                 "Password": usuarioDb[3]
-                }
-      usuarios.append(usuario)
-        
-    with open(PATH_JSON_USUARIOS, 'w') as file:
-      dump(usuarios, file, indent=4)
+    if not usuariosDb:
+      print("Nenhum usuário registrado ainda!")
+    else:
+      for usuarioDb in usuariosDb:
+        i += 1
+        print(f'Usuario {i} de {len(usuariosDb)}.')
+  
+        usuario = {
+                  "ID": usuarioDb[0],
+                   "Name": usuarioDb[1],
+                   "Nickname": usuarioDb[2],
+                   "Password": usuarioDb[3]
+                  }
+        usuarios.append(usuario)
+          
+      with open(PATH_JSON_USUARIOS, 'w') as file:
+        dump(usuarios, file, indent=4)
     print('Backup de usuarios concluído com sucesso!\n')
 
   def backupJogos(self):
@@ -229,20 +237,23 @@ class DataBase:
     jogosDb = self.GetJogos()
     print('Iniciando backup de jogos')
     
-    for jogoDb in jogosDb:
-      i += 1
-      print(f'Jogo {i} de {len(jogosDb)}.')
+    if not jogosDb:
+      print("Nenhum jogo registrado ainda!")
+    else:
+      for jogoDb in jogosDb:
+        i += 1
+        print(f'Jogo {i} de {len(jogosDb)}.')
 
-      jogo = {
-              "ID": jogoDb[0],
-              "Name": jogoDb[1],
-              "Category": jogoDb[2],
-              "Platform": jogoDb[3]
-             }
-      jogos.append(jogo)
+        jogo = {
+                "ID": jogoDb[0],
+                "Name": jogoDb[1],
+                "Category": jogoDb[2],
+                "Platform": jogoDb[3]
+               }
+        jogos.append(jogo)
         
-    with open(PATH_JSON_JOGOS, 'w') as file:
-      dump(jogos, file, indent=4)
+      with open(PATH_JSON_JOGOS, 'w') as file:
+        dump(jogos, file, indent=4)
 
     print('Backup de jogos concluído com sucesso!\n')
 
@@ -259,9 +270,3 @@ class DataBase:
     except Exception as e:
       print('\nFalha ao realizar backup!')
       print(e)
-
-
-
-
-if __name__ == '__main__':
-  DataBase()
