@@ -1,0 +1,50 @@
+[
+    {
+        "ID": 1,
+        "Name": "Stardew Valley",
+        "Category": "RPG",
+        "Platform": "PC"
+    },
+    {
+        "ID": 2,
+        "Name": "Silent Hill",
+        "Category": "Terror",
+        "Platform": "Console, PC"
+    },
+    {
+        "ID": 3,
+        "Name": "Unravel",
+        "Category": "Puzzle",
+        "Platform": "Console, PC"
+    },
+    {
+        "ID": 4,
+        "Name": "Valorant",
+        "Category": "FPS",
+        "Platform": "PC"
+    },
+    {
+        "ID": 5,
+        "Name": "Need for Speed",
+        "Category": "Corrida",
+        "Platform": "PC, PS2"
+    },
+    {
+        "ID": 6,
+        "Name": "God of War",
+        "Category": "Hack n Slash",
+        "Platform": "PS2"
+    },
+    {
+        "ID": 7,
+        "Name": "The Past Within",
+        "Category": "Puzzle",
+        "Platform": "PC, Console, Mobile"
+    },
+    {
+        "ID": 8,
+        "Name": "Key We",
+        "Category": "Puzzle",
+        "Platform": "PC"
+    }
+]
