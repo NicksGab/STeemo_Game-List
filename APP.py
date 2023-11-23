@@ -8,7 +8,6 @@ import os
 from models.Jogo import Jogo
 from models.Usuario import Usuario
 from models.DataBase import DataBase
-from models.Seguranca import CryptoGuard
 
 from views.Views_User import Views_User
 from views.Views_Game import Views_Game
