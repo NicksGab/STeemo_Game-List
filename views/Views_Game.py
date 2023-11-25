@@ -50,7 +50,7 @@ def Views_Game(self, app):
   @app.route('/editar/<int:id>')
   def editar(id):
     if 'usuario_logado' not in session or session['usuario_logado'] == None:
-      return redirect(url_for('login', proxima=url_for('editar')))
+      return redirect(url_for('login', proxima=url_for('editar', id=id)))
 
     jogo = self.pegaJogoPorId(id)
 
@@ -105,5 +105,3 @@ def Views_Game(self, app):
   @app.route('/uploads/<nome_arquivo>')
   def imagemPadrao(nome_arquivo):
     return send_from_directory('uploads', nome_arquivo)
-  
-    
